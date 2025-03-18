@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 
+''' Comentário teste '''
+
 app = Flask(__name__)
 
 dici = {
