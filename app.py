@@ -3,7 +3,18 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 dici = {
-    "alunos":[{}],
+    "alunos":[
+        {
+            "id": 1,
+            "nome": "Pedro Henrique",
+            "idade": "21",
+            "data_nascimento": "26/01/2004",
+            "nota_primeiro_semestre": "10.0",
+            "nota_segundo_semestre": "10.0",
+            "media_final": "10.0",
+            "turma_id": "1"
+        }
+        ],
     "professores":[{}],
     "turmas":[{}]
 }
@@ -24,7 +35,6 @@ def criarAluno():
         aluno = {
             "id": len(alunos),
             "nome": r["nome"],
-            "matricula": r["matricula"],
             "idade": r["idade"],
             "data_nascimento": r["data_nascimento"],
             "nota_primeiro_semestre": r["nota_primeiro_semestre"],
