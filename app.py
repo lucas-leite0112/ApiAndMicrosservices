@@ -12,10 +12,22 @@ dici = {
         "nota_segundo_semestre":0,
         "turma":0
     }
+    ],
+    "professores":[
+        {
+        "id": 0,
+        "nome": "string",
+        "idade": 0,
+        "data_nascimento": "string",
+        "disciplina": "string",
+        "salario": 0
+            
+        }
     ]
 }
 
-idContador = 0
+idAluno = 0
+idProfessor = 0
 
 @app.route('/alunos', methods=['GET'])
 def getAlunos():
@@ -41,9 +53,9 @@ def criandoAluno():
     idade = data_atual.year - data_nasc.year - ((data_atual.month, data_atual.day) < (data_nasc.month, data_nasc.day))
     response["idade"] = idade
 
-    global idContador
-    idContador += 1
-    response["id"] = idContador
+    global idAluno
+    idAluno += 1
+    response["id"] = idAluno
 
     aluno.append(response)
     return jsonify({"mensagem":"Aluno criado","aluno":aluno}),201
@@ -75,6 +87,42 @@ def deletandoAluno(idAluno):
             alunos.remove(aluno)
             return jsonify({"mensagem": "Aluno deletado"}), 200
     return jsonify({"mensagem": "Aluno não encontrado"}), 404
+
+
+# PROFESSOR
+
+@app.route('/professores', methods=['GET'])
+def getProfessor():
+    dados = dici["professores"]
+    return jsonify(dados)
+
+@app.route('/professores', methods=['POST'])
+def criandoProfessor():
+    response = request.json
+    professor = dici['professores']
+
+    data = response['data_nascimento']
+    data_nasc = datetime.strptime(data, "%d-%m-%Y")
+    data_atual = datetime.today()
+    idade = data_atual.year - data_nasc.year - ((data_atual.month, data_atual.day) < (data_nasc.month, data_nasc.day))
+    response["idade"] = idade
+
+    global idProfessor
+    idProfessor += 1
+    response["id"] = idProfessor
+
+    professor.append(response)
+    return jsonify({"mensagem":"Professor criado","professor":professor}),201
+
+
+@app.route('/professor/<int:idProfessor>', methods=['DELETE'])
+def deletandoProfessor(idProfessor):
+    professor = dici['professor']
+    for professor in professor:
+        if 'id' in professor and professor['id'] == idProfessor: 
+            professor.remove(professor)
+            return jsonify({"mensagem": "Professor deletado"}), 200
+    return jsonify({"mensagem": "Professor não encontrado"}), 404
 
 
 if __name__ == "__main__":
