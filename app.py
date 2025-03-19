@@ -43,9 +43,9 @@ def updateAluno(idAluno):
         alunos = dici['alunos']
         for aluno in alunos:
             if aluno['id'] == idAluno:
-                response = request.json
-                aluno['nome'] = response['nome']
-                return jsonify(response),200
+                r = request.get_json
+                aluno['nome'] = r['nome']
+                return jsonify(r),200
         return jsonify({"erro": "Aluno não encontrado"})
     except Exception:
         return jsonify({"erro": "Erro ao atualizar aluno"})
