@@ -22,7 +22,7 @@ def criarAluno():
         r = request.get_json()
         alunos = dici['alunos']
         aluno = {
-            "id": len(alunos) + 1,
+            "id": len(alunos),
             "nome": r["nome"],
             "matricula": r["matricula"],
             "idade": r["idade"],
@@ -80,7 +80,7 @@ def criarProfessor():
         r = request.get_json()
         professores = dici['professores']
         professor = {
-            "id": len(r) + 1,
+            "id": len(professor),
             "nome": r["nome"],
             "especialidade": r["especialidade"],
             "idade": r["idade"],
@@ -131,7 +131,7 @@ def criar_turma():
         r = request.get_json()
         turmas = dici["turmas"]
         turma = {
-            "id": len(turmas) + 1,
+            "id": len(turmas),
             "nome": r["nome"],
             "professor_id": r["professor_id"]
         }
