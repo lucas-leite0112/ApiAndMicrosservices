@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 dici = {
     "alunos":[
-    {   "id":0,
+    {
         "data_nascimento": "01/12/2002",
         "nome": "lucas",
         "nota_primeiro_semestre":0,
@@ -15,7 +15,7 @@ dici = {
     ]
 }
 
-id = 0
+idContador = 0
 
 @app.route('/alunos', methods=['GET'])
 def getAlunos():
@@ -41,9 +41,9 @@ def criandoAluno():
     idade = data_atual.year - data_nasc.year - ((data_atual.month, data_atual.day) < (data_nasc.month, data_nasc.day))
     response["idade"] = idade
 
-    global id
-    id += 1
-    response["id"] = id
+    global idContador
+    idContador += 1
+    response["id"] = idContador
 
     aluno.append(response)
     return jsonify({"mensagem":"Aluno criado","aluno":aluno}),201
@@ -56,10 +56,26 @@ def updateAluno(idAluno):
             response = request.json
             aluno['nome'] = response['nome']
             return jsonify(response),200
+    return jsonify({"mensagem":"Aluno não encontrado"})
 
 @app.route('/alunos/<int:idAluno>', methods=['GET'])
-def pegandoAlunoId(idAluno):
-    pass
+def getAlunoId(idAluno):
+    alunos = dici['alunos']
+    for aluno in alunos:
+        if 'id' in aluno and aluno['id'] == idAluno:
+            return jsonify(aluno)
+    return jsonify({'mensagem:"Aluno não encontrado '})
+
+
+@app.route('/alunos/<int:idAluno>', methods=['DELETE'])
+def deletandoAluno(idAluno):
+    alunos = dici['alunos']
+    for aluno in alunos:
+        if 'id' in aluno and aluno['id'] == idAluno: 
+            alunos.remove(aluno)
+            return jsonify({"mensagem": "Aluno deletado"}), 200
+    return jsonify({"mensagem": "Aluno não encontrado"}), 404
+
 
 if __name__ == "__main__":
     app.run(debug=True)
