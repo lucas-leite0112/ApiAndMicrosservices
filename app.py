@@ -23,12 +23,19 @@ dici = {
         "salario": 0
             
         }
+    ],
+    "turmas":[
+        {
+            "id": 0,
+            "nome": "string",
+            "turno": "string",
+            "professor_id": 0
+        }
     ]
 }
 
 idAluno = 0
 idProfessor = 0
-idTurma = 0
 
 @app.route('/alunos', methods=['GET'])
 def getAlunos():
