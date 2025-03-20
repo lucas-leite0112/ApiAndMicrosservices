@@ -28,6 +28,7 @@ dici = {
 
 idAluno = 0
 idProfessor = 0
+idTurma = 0
 
 @app.route('/alunos', methods=['GET'])
 def getAlunos():
@@ -114,6 +115,23 @@ def criandoProfessor():
     professor.append(response)
     return jsonify({"mensagem":"Professor criado","professor":professor}),201
 
+@app.route('/professores/<int:idProfessor>', methods=['GET'])
+def getProfessorId(idProfessor):
+    professores = dici['professores']
+    for professor in professores:
+        if 'id' in professor and professor['id'] == idProfessor:
+            return jsonify(professor)
+    return jsonify({'mensagem':'Professor não encontrado'})
+
+@app.route('/professores/<int:idProfessor>', methods=['PUT'])
+def atualizandoProfessor(idProfessor):
+    professores = dici['professores']
+    for professor in professores:
+        if professor['id'] == idProfessor:
+            response = request.json
+            professor['nome'] = response['nome']
+            return jsonify(response)
+    return jsonify({"mensagem":"Professor não encontrado"})
 
 @app.route('/professores/<int:idProfessor>', methods=['DELETE'])
 def deletandoProfessor(idProfessor):
@@ -123,54 +141,52 @@ def deletandoProfessor(idProfessor):
             professores.remove(professor)
             return jsonify({"mensagem": "Professor deletado"}), 200
     return jsonify({"mensagem": "Professor não encontrado"}), 404
+
+# TURMA
     
 @app.route('/turmas', methods=['GET'])
-def getTurmas():
-    r = dici["turmas"]
-    return jsonify(r)
+def getTurma():
+    dados = dici["turmas"]
+    return jsonify(dados)
 
 
 @app.route('/turmas', methods=['POST'])
-def criar_turma():
-    try:
-        r = request.get_json()
-        turmas = dici["turmas"]
-        turma = {
-            "id": len(turmas),
-            "nome": r["nome"],
-            "professor_id": r["professor_id"]
-        }
-        turmas.append(turma)
-        return jsonify(turma)
-    except Exception:
-        return jsonify({"erro": "Erro ao criar turma"})
+def criandoTurma():
+    response = request.json
+    turma = dici["turmas"]
 
+    id = len(turma) + 1
+    response['id'] = id
+
+    turma.append(response)
+    return jsonify({"mensagem":"Turma criada","turma":turma}),201
+
+@app.route('/turmas/<int:idTurma>', methods=['GET'])
+def getTurmaId(idTurma):
+    turmas = dici['turmas']
+    for turma in turmas:
+        if 'id' in turma and turma['id'] == idTurma:
+            return jsonify(turma)
+    return jsonify({'mensagem':'Turma não encontrada'})
 
 @app.route('/turmas/<int:idTurma>', methods=['PUT'])
-def updateTurma(idTurma):
-    try:
-        turmas = dici["turmas"]
-        for turma in turmas:
-            if turma["id"] == idTurma:
-                r = request.get_json()
-                turma["nome"] = r.get("nome", turma["nome"])
-                turma["professor_id"] = r.get("professor_id", turma["professor_id"])
-                return jsonify(turma)
-        return jsonify({"erro": "Turma não encontrada"})
-    except Exception:
-        return jsonify({"erro": "Erro ao atualizar turma"})
-    
+def atualizandoTurmas(idTurma):
+    turmas = dici['turmas']
+    for turma in turmas:
+        if turma['id'] == idTurma:
+            response = request.json
+            turma['nome'] = response['nome']
+            return jsonify(response)
+    return jsonify({"mensagem":"Turma não encontrada"})
+
 @app.route('/turmas/<int:idTurma>', methods=['DELETE'])
-def deletar_turma(idTurma):
-    try:
-        turmas = dici["turmas"]
-        for turma in turmas:
-            if turma["id"] == idTurma:
-                turmas.remove(turma)
-                return jsonify({"mensagem": "Turma deletada"})
-        return jsonify({"erro": "Turma não encontrada"})
-    except Exception:
-        return jsonify({"erro": "Erro ao deletar turma"})
+def deletandoTurma(idTurma):
+    turmas = dici['turmas']
+    for turma in turmas:
+        if 'id' in turma and turma['id'] == idTurma: 
+            turmas.remove(turma)
+            return jsonify({"mensagem": "Turma deletada"}), 200
+    return jsonify({"mensagem": "Turma não encontrada"}), 404
 
 if __name__ == "__main__":
     app.run(debug=True)
