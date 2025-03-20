@@ -1,126 +1,128 @@
 from flask import Flask, jsonify, request
+from datetime import datetime
 
 app = Flask(__name__)
 
 dici = {
     "alunos":[
+    {
+        "data_nascimento": "01/12/2002",
+        "nome": "lucas",
+        "nota_primeiro_semestre":0,
+        "nota_segundo_semestre":0,
+        "turma":0
+    }
+    ],
+    "professores":[
         {
-            "id": 1,
-            "nome": "Pedro Henrique",
-            "idade": "21",
-            "data_nascimento": "26/01/2004",
-            "nota_primeiro_semestre": "10.0",
-            "nota_segundo_semestre": "10.0",
-            "media_final": "10.0",
-            "turma_id": "1"
+        "id": 0,
+        "nome": "string",
+        "idade": 0,
+        "data_nascimento": "string",
+        "disciplina": "string",
+        "salario": 0
+            
         }
-        ],
-    "professores":[{}],
-    "turmas":[{}]
+    ]
 }
+
+idAluno = 0
+idProfessor = 0
 
 @app.route('/alunos', methods=['GET'])
 def getAlunos():
-    r = dici["alunos"]
-    return jsonify(r)
+    dados = dici["alunos"]
+    return jsonify(dados)
 
 class AlunoNaoEncontrado(Exception):
     pass
 
 @app.route('/alunos', methods=['POST'])
-def criarAluno():
-    try:
-        r = request.get_json()
-        alunos = dici['alunos']
-        aluno = {
-            "id": len(alunos),
-            "nome": r["nome"],
-            "idade": r["idade"],
-            "data_nascimento": r["data_nascimento"],
-            "nota_primeiro_semestre": r["nota_primeiro_semestre"],
-            "nota_segundo_semestre": r["nota_segundo_semestre"],
-            "media_final": r["media_final"],
-            "turma_id": r["turma_id"]
-        }
-        alunos.append(aluno)
-        return jsonify(aluno)
-    except Exception:
-        return jsonify({"erro": "Erro ao criar o aluno"})
+def criandoAluno():
+    response = request.json
+    aluno = dici['alunos']
+
+    nota1 = float(response['nota_primeiro_semestre'])
+    nota2 = float(response['nota_segundo_semestre'])
+    media_final = (nota1 + nota2) / 2
+    response["media_final"] = media_final
+
+    data = response['data_nascimento']
+    data_nasc = datetime.strptime(data, "%d/%m/%Y")
+    data_atual = datetime.today()
+    idade = data_atual.year - data_nasc.year - ((data_atual.month, data_atual.day) < (data_nasc.month, data_nasc.day))
+    response["idade"] = idade
+
+    global idAluno
+    idAluno += 1
+    response["id"] = idAluno
+
+    aluno.append(response)
+    return jsonify({"mensagem":"Aluno criado","aluno":aluno}),201
 
 @app.route('/alunos/<int:idAluno>', methods=['PUT'])
 def updateAluno(idAluno):
-    try:
-        alunos = dici['alunos']
-        for aluno in alunos:
-            if aluno['id'] == idAluno:
-                r = request.get_json
-                aluno['nome'] = r['nome']
-                return jsonify(r),200
-        return jsonify({"erro": "Aluno não encontrado"})
-    except Exception:
-        return jsonify({"erro": "Erro ao atualizar aluno"})
-    
+    alunos = dici['alunos']
+    for aluno in alunos:
+        if 'id' in aluno and aluno['id'] == idAluno:
+            response = request.json
+            aluno['nome'] = response['nome']
+            return jsonify(response),200
+    return jsonify({"mensagem":"Aluno não encontrado"})
+
+@app.route('/alunos/<int:idAluno>', methods=['GET'])
+def getAlunoId(idAluno):
+    alunos = dici['alunos']
+    for aluno in alunos:
+        if 'id' in aluno and aluno['id'] == idAluno:
+            return jsonify(aluno)
+    return jsonify({'mensagem:"Aluno não encontrado '})
+
+
 @app.route('/alunos/<int:idAluno>', methods=['DELETE'])
-def deletar_aluno(idAluno):
-    try:
-        alunos = dici["alunos"]
-        for aluno in alunos:
-            if aluno["id"] == idAluno:
-                alunos.remove(aluno)
-                return jsonify({"mensagem": "Aluno deletado"})
-        return jsonify({"erro": "Aluno não encontrado"})
-    except Exception:
-        return jsonify({"erro": "Erro ao deletar aluno"})
-        
+def deletandoAluno(idAluno):
+    alunos = dici['alunos']
+    for aluno in alunos:
+        if 'id' in aluno and aluno['id'] == idAluno: 
+            alunos.remove(aluno)
+            return jsonify({"mensagem": "Aluno deletado"}), 200
+    return jsonify({"mensagem": "Aluno não encontrado"}), 404
+
+
+# PROFESSOR
+
 @app.route('/professores', methods=['GET'])
-def getProfessores():
-    r = dici['professores']
-    return jsonify(r)
+def getProfessor():
+    dados = dici["professores"]
+    return jsonify(dados)
 
 @app.route('/professores', methods=['POST'])
-def criarProfessor():
-    try:
-        r = request.get_json()
-        professores = dici['professores']
-        professor = {
-            "id": len(professor),
-            "nome": r["nome"],
-            "especialidade": r["especialidade"],
-            "idade": r["idade"],
-            "info": r["info"]
-        }
-        professores.append(professor)
-        return jsonify(professor)
-    except Exception:
-        return jsonify({"erro": "Erro ao criar professor"})
-    
-@app.route('/professores/<int:idProfessor>', methods=['PUT'])
-def updateProfessor(idProfessor):
-    try:
-        professores = dici["professores"]
-        for professor in professores:
-            if professor["id"] == idProfessor:
-                r = request.get_json()
-                professor["nome"] = r.get("nome", professor["nome"])
-                professor["especialidade"] = r.get("especialidade", professor["especialidade"])
-                professor["idade"] = r.get("idade", professor["idade"])
-                professor["info"] = r.get("info", professor["info"])
-                return jsonify(professor)
-        return jsonify({"erro": "Professor não encontrado"})
-    except Exception:
-        return jsonify({"erro": "Erro ao atualizar professor"})
-    
+def criandoProfessor():
+    response = request.json
+    professor = dici['professores']
+
+    data = response['data_nascimento']
+    data_nasc = datetime.strptime(data, "%d/%m/%Y")
+    data_atual = datetime.today()
+    idade = data_atual.year - data_nasc.year - ((data_atual.month, data_atual.day) < (data_nasc.month, data_nasc.day))
+    response["idade"] = idade
+
+    global idProfessor
+    idProfessor += 1
+    response["id"] = idProfessor
+
+    professor.append(response)
+    return jsonify({"mensagem":"Professor criado","professor":professor}),201
+
+
 @app.route('/professores/<int:idProfessor>', methods=['DELETE'])
-def deletar_professor(idProfessor):
-    try:
-        professores = dici["professores"]
-        for professor in professores:
-            if professor["id"] == idProfessor:
-                professores.remove(professor)
-                return jsonify({"mensagem": "Professor deletado"})
-        return jsonify({"erro": "Professor não encontrado"})
-    except Exception:
-        return jsonify({"erro": "Erro ao deletar professor"})
+def deletandoProfessor(idProfessor):
+    professores = dici['professores']
+    for professor in professores:
+        if 'id' in professor and professor['id'] == idProfessor: 
+            professores.remove(professor)
+            return jsonify({"mensagem": "Professor deletado"}), 200
+    return jsonify({"mensagem": "Professor não encontrado"}), 404
     
 @app.route('/turmas', methods=['GET'])
 def getTurmas():
