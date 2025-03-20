@@ -162,7 +162,7 @@ def criandoTurma():
     response = request.json
     turma = dici["turmas"]
 
-    id = len(turma) + 1
+    id = len(turma)
     response['id'] = id
 
     turma.append(response)
