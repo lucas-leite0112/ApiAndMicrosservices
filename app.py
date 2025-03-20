@@ -5,23 +5,20 @@ app = Flask(__name__)
 
 dici = {
     "alunos":[
-    {
-        "data_nascimento": "01/12/2002",
-        "nome": "lucas",
-        "nota_primeiro_semestre":0,
-        "nota_segundo_semestre":0,
-        "turma":0
-    }
+        {
+            "nome": "string",
+            "data_nascimento": "string",
+            "nota_primeiro_semestre": 0,
+            "nota_segundo_semestre": 0,
+            "turma_id": 0
+        }
     ],
     "professores":[
         {
-        "id": 0,
-        "nome": "string",
-        "idade": 0,
-        "data_nascimento": "string",
-        "disciplina": "string",
-        "salario": 0
-            
+            "nome": "string",
+            "data_nascimento": "string",
+            "disciplina": "string",
+            "salario": 0
         }
     ],
     "turmas":[
@@ -162,8 +159,7 @@ def criandoTurma():
     response = request.json
     turma = dici["turmas"]
 
-    id = len(turma)
-    response['id'] = id
+    response['id'] = len(turma)
 
     turma.append(response)
     return jsonify({"mensagem":"Turma criada","turma":turma}),201
