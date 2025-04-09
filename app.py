@@ -4,29 +4,33 @@ from datetime import datetime
 app = Flask(__name__)
 
 dici = {
-    "alunos":[
+    'alunos':[
         {
-            "nome": "string",
-            "data_nascimento": "string",
-            "nota_primeiro_semestre": 0,
-            "nota_segundo_semestre": 0,
-            "turma_id": 0
+            'id': 1,
+            'nome': 'Pedro',
+            'idade': 21,
+            'turma_id': 1,
+            'data_nascimento': '26/01/2004',
+            'nota_semestre_1': 10.0,
+            'nota_semestre_2': 8.0,
+            'media_final': 9.0
         }
     ],
-    "professores":[
+    'professores': [
         {
-            "nome": "string",
-            "data_nascimento": "string",
-            "disciplina": "string",
-            "salario": 0
+            'professor_id': 123,
+            'nome': "Caio",
+            'idade': 27,
+            'materia': "Dev API E Micros",
+            'obs': "Contato com aluno via Chat"
         }
     ],
-    "turmas":[
+    'turmas': [
         {
-            "id": 0,
-            "nome": "string",
-            "turno": "string",
-            "professor_id": 0
+            'turma_id': 12,
+            'descricao': 'ADS 3B',
+            'ativa': True,
+            'professor_id': 123
         }
     ]
 }
